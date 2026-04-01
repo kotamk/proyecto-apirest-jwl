@@ -1,0 +1,90 @@
+<div>
+    <header>
+        <h1 class="text-center py-3">Registro de usuarios</h1>
+    </header>
+
+    <main class="container">
+        <form class="row g-3" id="formRegistroUsuario">
+            <div class="col-md-6">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Pedro" required>
+            </div>
+            <div class="col-md-6">
+                <label for="apellido" class="form-label">Apellido</label>
+                <input type="text" class="form-control" id="apellido" name="apellido" placeholder="Figueroa" required>
+            </div>
+            <div class="col-12">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="pedro.figueroa@gmail.com" required>
+            </div>
+            <div class="col-md-6">
+                <label for="fecha_nacimiento" class="form-label">Fecha de nacimiento</label>
+                <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" placeholder="01-05-1990" required>
+            </div>
+            <div class="col-md-6">
+                <label for="nickname" class="form-label">Nickname</label>
+                <input type="text" class="form-control" id="nickname" name="nickname" placeholder="pedro.figueroa" required>
+            </div>
+            <div>
+                <label for="avatar" class="form-label">Sube la imagen de tu avatar</label>
+                <input type="file" class="form-control" id="avatar" name="avatar" placeholder="sube tu imagen" required>
+            </div>
+            <div class="col-md-6">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <div class="col-md-6">
+                <label for="replyPassword" class="form-label">Repita password</label>
+                <input type="password" class="form-control" id="replyPassword" name="replyPassword" required>
+            </div>
+            <div class="col-12 text-center">
+                <button type="submit" class="btn btn-primary">Registrar</button>
+            </div>
+        </form>
+    </main>
+
+</div>
+
+
+
+<script>
+
+const formRegistroUsuario = document.querySelector("#formRegistroUsuario");
+
+formRegistroUsuario.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    try{
+        const dataForm = new FormData(formRegistroUsuario);
+
+        if(dataForm.get("password") != dataForm.get("replyPassword")){
+            return alert("No coinciden los passwords ingresados!");
+        }
+        
+        const requestOptions = {
+            method: "POST",
+            body: dataForm,
+            redirect: "follow"
+        };
+
+        let response = await fetch('/api/usuarios', requestOptions);
+
+        let data = await response.json();
+
+        alert(data.message);
+        if(response.status == 201){
+            formRegistroUsuario.reset();
+
+            location.href = "/login";
+    
+        }else {
+            //...
+        }
+
+    }catch(error){
+        console.log(error);
+        alert("Algo ha salido mal al intenta registrar al usuario.");
+    }
+})
+
+</script>

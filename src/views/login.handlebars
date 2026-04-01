@@ -1,0 +1,73 @@
+<div>
+    <header>
+        <h1 class="text-center py-3">Login de usuarios</h1>
+    </header>
+
+    <main class="container">
+        <form class="row g-3 w-50 mx-auto" id="formLoginUsuario">
+            <div class="col-12">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="pedro.figueroa@gmail.com" required>
+            </div>
+            <div class="col-12">
+                <label for="password" class="form-label">Password: </label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <div class="col-12 text-center">
+                <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+        </form>
+    </main>
+</div>
+
+
+<script>
+    const formLoginUsuario = document.querySelector("#formLoginUsuario");
+    formLoginUsuario.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        try{
+
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        const dataForm = new FormData(formLoginUsuario);
+
+        let raw = {
+            email: dataForm.get("email"),
+            password: dataForm.get("password")
+        }
+
+        const requestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            body: JSON.stringify(raw),
+            redirect: "follow"
+        };
+
+        let response = await fetch('/api/usuarios/login', requestOptions);
+
+        let data = await response.json();
+
+        alert(data.message);
+        if(response.status == 200){
+            formLoginUsuario.reset();
+
+            
+            localStorage.setItem("usuario", JSON.stringify(data.usuario));
+            localStorage.setItem("jwt", data.token);
+
+            location.href = "/home";
+    
+        }else {
+            //...
+        }
+
+    }catch(error){
+        console.log(error);
+        alert("Algo ha salido mal al intenta registrar al usuario.");
+    }
+
+
+    });
+</script>

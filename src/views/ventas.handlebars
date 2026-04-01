@@ -1,0 +1,38 @@
+<header>
+    <h1 class="text-center py-5"> Ventas generadas</h1>
+</header>
+
+<main class="container">
+    <section>
+        
+        {{#each ventas }}
+            <div class="card-venta">
+                <h4>ID VENTA: {{id_venta}}</h4>
+                <p>Fecha venta: {{fecha}}</p>
+                <p>Cliente: {{usuario}}</p>
+
+                <h3>Detalle de la venta:</h3>
+                <ul>
+                    {{#each detalle }}
+                        <li>
+                            ID detalle: {{id_detalle}}, 
+                            Producto: {{producto}}, 
+                            Cantidad: {{cantidad}},
+                            Precio: {{precio}},
+                            Subtotal: {{subtotalStr}}
+                        </li>
+                    {{/each }}
+                </ul>
+                <p>TOTAL VENTA: {{this.total}}</p>
+            </div>
+        {{/each }}
+    </section>
+</main>
+
+<style>
+.card-venta{
+    border: 1px solid black;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+</style>

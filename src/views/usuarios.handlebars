@@ -1,0 +1,84 @@
+<header>
+    <h1 class="text-center py-3">Vista de usuarios.</h1>
+</header>
+
+<main class="container">
+    <h2>Listado de usuarios...</h2>
+
+    <ul id="usuarios">
+
+    </ul>
+
+</main>
+
+
+<script>
+
+    const listarUsuarios = (usuarios) => {
+
+        let elementos = "";
+        for(usuario of usuarios){
+            
+            if(!usuario.status){
+                continue;
+            }
+            let {id, nombre, apellido, url } = usuario;
+            elementos += `
+            <li>ID: 
+            ${id}, ${nombre} ${apellido}
+            <a href="" data-id="${id}">Ver más</a>           
+            </li>`
+        }
+
+        document.querySelector("#usuarios").innerHTML = elementos;
+
+    };
+
+
+    const getData = async (url) => {
+        try{
+            let response = await fetch(url);
+
+            let data = await response.json();
+
+            if(response.status == 200){
+                return data;
+            }else {
+                return false;
+            }
+
+        }catch(error){
+            console.log(error);
+            throw new Error("Error al intentar obtener los datos de la api...")
+        }
+
+    }
+
+    const initUsuariosView = async () => {
+        try{
+            let data = await getData("/api/usuarios");
+
+            if(data){
+                listarUsuarios(data.usuarios);
+            }
+            
+        }catch(error){
+            console.log(error);
+        }
+    };
+
+    initUsuariosView();
+
+    const usuariosEl = document.querySelector("#usuarios");
+
+    usuariosEl.addEventListener("click", (event)=> {
+        event.preventDefault();
+        let element = event.target;
+        if(element.localName == "a"){
+            let id = element.dataset.id;
+            let token = localStorage.getItem("jwt");
+
+            location.href=`/perfil/${id}?token=${token}`;
+        }
+    });
+</script>

@@ -1,0 +1,129 @@
+<header>
+    <h1 class="text-center py-3">Perfil de usuario</h1>
+</header>
+
+{{#if usuario.status}}
+<main class="container">
+
+    {{#if error}}
+        <p>{{error}}</p>
+        <a href="/" class="btn btn-primary">Volver a la página principal</a>
+
+    {{else}} 
+
+    <div>
+        
+    </div>
+    
+    <section>
+        <p>ID: {{usuario.id}}</p>
+        <p>Nombre: {{usuario.nombre}}</p>
+        <p>Apellido: {{usuario.apellido}}</p>
+        <p>Email: {{usuario.email}}</p>
+
+        <p>Imagen de perfil:</p>
+
+        <img src="/media/image/{{usuario.avatar}}" alt="Avatar usuario" width="150">
+    </section>
+
+    <hr />
+
+
+    {{#if allowEdit}}
+    <section>
+        <p>Actualizar / Cambiar Email:</p>
+        <form id="formChangeEmail">
+            <div>
+                <input type="hidden" value="{{usuario.id}}" name="id" />
+            </div>
+            <div>
+                <label class="form-label">Reemplaza por tu nuevo Email</label>
+                <input type="email" class="form-control" name="email" required value="{{usuario.email}}" />
+                <button type="submit" class="btn btn-warning">Cambiar</button>
+            </div>
+        </form>
+    </section>
+    <section class="d-flex justify-content-center py-5">
+        <button class="btn btn-danger" id="btn-delete" data-id="{{usuario.id}}">Eliminar cuenta</button>
+    </section>
+
+    {{/if }}
+
+    
+    {{/if}}
+
+</main>
+
+{{else }}
+
+<main class="container">
+    <h2>El usuario no se encuentra activo...</h2>
+</main>
+
+{{/if }}
+
+<script>
+    const formChangeEmail = document.querySelector("#formChangeEmail");
+    formChangeEmail.addEventListener("submit", async (event) => {
+        event.preventDefault(); try {
+
+            let token = localStorage.getItem("jwt");
+
+            const myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            myHeaders.append("Authorization", `Bearer ${token}`);
+
+            const dataForm = new FormData(formChangeEmail);
+
+            let raw = {
+                email: dataForm.get("email"),
+                id: dataForm.get("id"),
+            }
+            const requestOptions = {
+                method: "PATCH", headers:
+                    myHeaders, body: JSON.stringify(raw), redirect: "follow"
+            };
+
+            let response = await fetch("/api/usuarios/email", requestOptions);
+            let data = await response.json();
+            alert(data.message);
+
+            if (response.status == 201) {
+                location.reload();
+            } else {
+                /* */
+            }
+        } catch (error) { 
+            console.log(error); 
+        }
+    });
+
+
+
+    /* EVENTO ELIMINAR CUENTA */
+    const btnDelete = document.querySelector("#btn-delete");
+    btnDelete.addEventListener("click", async (event)=> {
+
+        try {
+            let confirmacion = confirm("Está seguro que desea eliminar su cuenta?");
+
+            if(confirmacion){
+                //pasos para eliminar cuenta
+                let id = btnDelete.dataset.id;
+                const response = await fetch("/api/usuarios/"+id, { method: "DELETE"});
+                const data = await response.json();
+
+                if(response.status == 200){
+                    alert(data.message);
+                    location.href = "/";
+                }else {
+                    alert(data.message);
+                }
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+    });
+
+</script>

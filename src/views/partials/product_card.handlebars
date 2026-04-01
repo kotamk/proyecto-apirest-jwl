@@ -1,0 +1,24 @@
+<div class="card w-100">
+    <img src="{{producto.imagen}}" class="card-img-top" alt="{{producto.nombre}}" />
+    <div class="card-body">
+        <div class="altura-title-card">
+            <h5 class="card-title">{{producto.nombre}}</h5> 
+        </div>
+        
+        <p class="card-text">Precio: {{producto.precio}}</p>
+        <p class="card-text">Stock: {{producto.stock}}</p>
+
+        <div class="d-flex justify-content-between">
+            <a href="" class="btn btn-primary">Ver más</a>
+            <button class="btn btn-success btn-add-product" onclick="agregarProducto('{{producto.id}}')">Agregar Carrito</button> 
+        </div>
+        
+
+    </div>
+</div>
+
+<style>
+    .altura-title-card{
+        min-height: 4rem;
+    }
+</style>

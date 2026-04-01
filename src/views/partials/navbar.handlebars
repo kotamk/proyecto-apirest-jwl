@@ -1,0 +1,91 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container">
+        <a class="navbar-brand" href="#">M8 - Portafolio</a>
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link active" aria-current="page" href="/">Home</a>
+                <a class="nav-link" href="/productos">Productos</a>
+                <a class="nav-link" href="/usuarios" id="usuarios-link">Usuarios</a>
+                <a class="nav-link" href="/ventas" id="ventas-link">Ventas</a>
+                <a class="nav-link" href="/login" id="login-link">Login</a>
+                <a class="nav-link" href="/register" id="register-link">Registro</a>
+
+                <a class="nav-link fw-bold" href="/carrito" id="carrito-link">Carrito: <span id="cantidad-carrito">0</span></a>
+                <a href="" id="logout-link" class="nav-link">Logout</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+<script>
+
+    //ENLACES
+    const carritoLink = document.querySelector("#carrito-link");
+    const ventasLink = document.querySelector("#ventas-link");
+    const usuariosLink = document.querySelector("#usuarios-link");
+    const loginLink = document.querySelector("#login-link");
+    const registerLink = document.querySelector("#register-link");
+    const logoutLink = document.querySelector("#logout-link");
+    let usuarioStorage = JSON.parse(localStorage.getItem("usuario"));
+
+
+
+    const init = async () => {
+        if(usuarioStorage){
+            let response = await fetch("/api/carritos/cantidad/"+usuarioStorage.id);
+            let data = await response.json();
+            document.querySelector("#cantidad-carrito").textContent = data.cantidad;
+
+            //OCULTAR LINKS
+            loginLink.classList.add("d-none");
+            registerLink.classList.add("d-none");
+
+            logoutLink.classList.remove("d-none");
+            carritoLink.classList.remove("d-none");
+            ventasLink.classList.remove("d-none");
+            usuariosLink.classList.remove("d-none");
+        }else {
+            //MOSTRAR LINKS
+            logoutLink.classList.add("d-none");
+            carritoLink.classList.add("d-none");
+            ventasLink.classList.add("d-none");
+            usuariosLink.classList.add("d-none");
+
+            loginLink.classList.remove("d-none");
+            registerLink.classList.remove("d-none");
+        }
+    }
+    init();
+
+
+    logoutLink.addEventListener("click", (event) => {
+        event.preventDefault();
+
+        localStorage.clear();
+        alert("Sesión cerrada correctamente.");
+        location.href = "/";
+
+    });
+
+
+    carritoLink.addEventListener("click", (event) => {
+        event.preventDefault();
+        if(usuarioStorage){
+
+            location.href = "/carrito/"+usuarioStorage.id;
+        }
+    })
+
+</script>

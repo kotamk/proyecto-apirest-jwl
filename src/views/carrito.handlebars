@@ -1,0 +1,117 @@
+<header>
+    <h1 class="text-center py-5">Mi carrito</h1>
+</header>
+
+<main class="container">
+
+    {{#if carrito }}
+    <section>
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th scope="col">ID Detalle</th>
+                    <th scope="col">Imagen</th>
+                    <th scope="col">Producto</th>
+                    <th scope="col">Precio</th>
+                    <th scope="col">Cantidad</th>
+                    <th scope="col">Subtotal</th>
+                    <th scope="col">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each carrito}}
+                <tr>
+                    <th scope="row">{{id}}</th>
+                    <td>
+                        <img src="{{producto.imagen}}" alt="{{producto.nombre}}" width="75">
+                    </td>
+                    <td>{{producto.nombre}}</td>
+                    <td>{{producto.precio}}</td>
+                    <td>
+                        <input type="number" value="{{cantidad}}">
+                    </td>
+                    <td>{{subtotal}}</td>
+                    <td>
+                        <button class="btn btn-danger" onclick="eliminarDetalle({{id}})">Eliminar producto</button>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+        <div>
+            <p class="text-end">total compra: {{total}}
+            </p>
+        </div>
+
+        <div class="py-5 d-flex justify-content-center">
+            <button class="btn btn-success" id="btn-comprar">Procesar compra</button>
+        </div>
+    </section>
+
+    {{else}}
+    <section>
+        <p>No existen productos para mostrar</p>
+    </section>
+
+
+    {{/if}}
+
+</main>
+
+
+<script>
+
+    const eliminarDetalle = async (id) => {
+        try {
+
+            if(!confirm("Está seguro que desea eliminar el producto?")){
+                return true;
+            }
+
+            let token = localStorage.getItem("jwt");
+            let response = await fetch("/api/carritos/"+id, {
+                method: "delete",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            let data = await response.json();
+
+            alert(data.message);
+            location.reload();
+
+            
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const btnComprar = document.querySelector("#btn-comprar");
+
+    if(btnComprar){
+        btnComprar.addEventListener("click", async () => {
+            try {
+
+                let id = usuarioStorage.id;
+                let token = localStorage.getItem("jwt");
+                const response = await fetch("/api/ventas/"+id, {
+                    method: "post",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+                const data = await response.json();
+
+                alert(data.message);
+
+
+                //location.href = "/ventas/"+ data.id_venta;
+                location.href = "/ventas";
+                
+            } catch (error) {
+                console.log(error);
+            }
+        });
+    }
+</script>

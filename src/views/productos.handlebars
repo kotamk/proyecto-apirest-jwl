@@ -1,0 +1,75 @@
+<header>
+    <h1 class="text-center py-3">Nuestros productos...</h1>
+</header>
+
+<main class="container">
+    <section>
+        <form action="/productos">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Buscar en la web" name="producto"
+                    aria-label="Buscar productos en la web" aria-describedby="button-search">
+                <button class="btn btn-outline-secondary" type="submit" id="button-search">Buscar</button>
+            </div>
+        </form>
+
+        <div class="row justify-cotent-evenly g-3 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
+            {{#each productos }}
+            <div class="col">
+                {{> product_card
+                producto = this
+                }}
+            </div>
+            {{/each }}
+        </div>
+    </section>
+</main>
+
+
+<script>
+
+    const agregarProducto = async (id_producto) => {
+        if(usuarioStorage){
+            const cantidadCarritoEl = document.querySelector("#cantidad-carrito");
+            console.log("id", id_producto);
+
+            //ruta -> "/api/carritos/add/:id_usuario/:id_producto"
+            
+            try {
+                let token = localStorage.getItem("jwt");
+                let response = await fetch(`/api/carritos/add/${usuario.id}/${id_producto}`, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+
+                let data = await response.json();
+
+                if(response.status == 201){
+                    alert(data.message);
+                    let cantidad = Number(cantidadCarritoEl.textContent) + 1;
+                    cantidadCarritoEl.textContent = cantidad;
+                }
+
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    };
+
+
+    const initProductosView = () => {
+
+        if(!usuarioStorage){
+            let btnssAddProduct = document.querySelectorAll(".btn-add-product");
+            
+            btnssAddProduct .forEach(b => b.classList.add("d-none"));
+        }
+        
+    };
+
+    initProductosView();
+
+    
+
+</script>
