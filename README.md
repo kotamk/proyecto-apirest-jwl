@@ -1,4 +1,4 @@
-# PROYECTO PORTAFOLIO M8
+# PROYECTO JWL
 
 Esta es una API REST con un Frontend integrado que funciona como una tienda en línea. Cumple con los requisitos de registro/login de usuarios mediante JSON Web Tokens (JWT) y el manejo individual de compras por usuario.
 
